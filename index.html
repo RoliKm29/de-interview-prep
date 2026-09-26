@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DE Interview Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+:root{
+  --bg:#eef1f5;--surface:#ffffff;--surface-2:#f5f7fa;--line:#d6dce5;--text:#17202e;--muted:#5b6778;
+  --accent:#2f5bd3;--accent-soft:#e3eafc;--ok:#2e8b5f;--warn:#a87414;--bad:#c2463a;
+  --code-bg:#f3f5f8;--kw:#8a3fb8;--str:#2e7d4f;--num:#b35c12;--cm:#7a8494;--fn:#2f5bd3;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121821;--surface:#19212d;--surface-2:#1f2835;--line:#2c3645;--text:#e3e8ef;--muted:#8f9cae;
+  --accent:#88a8ff;--accent-soft:#223052;--ok:#5bbb8d;--warn:#e0b04d;--bad:#e8735f;
+  --code-bg:#0f141c;--kw:#c79bf2;--str:#8fd1a6;--num:#f0a868;--cm:#6f7c8f;--fn:#88a8ff;}}
+:root[data-theme="dark"]{
+  --bg:#121821;--surface:#19212d;--surface-2:#1f2835;--line:#2c3645;--text:#e3e8ef;--muted:#8f9cae;
+  --accent:#88a8ff;--accent-soft:#223052;--ok:#5bbb8d;--warn:#e0b04d;--bad:#e8735f;
+  --code-bg:#0f141c;--kw:#c79bf2;--str:#8fd1a6;--num:#f0a868;--cm:#6f7c8f;--fn:#88a8ff;}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 var(--sans);min-height:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+a{color:var(--accent)}
+.app{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:100vh}
+aside{background:var(--surface);border-right:1px solid var(--line);padding:20px 12px;position:sticky;top:env(safe-area-inset-top,0px);height:100vh;overflow-y:auto}
+.brand{font-weight:700;font-size:17px;padding:0 10px 14px;letter-spacing:-.01em}
+.brand small{display:block;font-weight:400;font-size:12.5px;color:var(--muted)}
+.nav{list-style:none;margin:0;padding:0}
+.nav button{width:100%;display:flex;align-items:center;gap:10px;text-align:left;background:none;border:0;border-radius:6px;padding:7px 10px;font-size:14px}
+.nav button:hover{background:var(--surface-2)}
+.nav button[aria-current="true"]{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.nav .meta{margin-left:auto;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--line)}
+.dot.pending{background:var(--accent)}.dot.done{background:var(--ok)}
+.navsep{height:1px;background:var(--line);margin:10px 8px}
+.topbar{display:none}
+main{padding:32px 40px 80px;min-width:0}
+.wrap{max-width:880px}
+h1{font-size:30px;line-height:1.2;margin:0 0 6px;letter-spacing:-.02em}
+h2{font-size:18px;margin:36px 0 12px}
+.sub{color:var(--muted);margin:0 0 20px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:8px 14px;font-size:14px;font-weight:500}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface);font-weight:600}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.small{padding:4px 10px;font-size:13px}
+.btn.danger{color:var(--bad)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.stats{display:flex;flex-wrap:wrap;gap:28px;margin:18px 0 8px}
+.stat b{font-size:26px;font-variant-numeric:tabular-nums;display:block;line-height:1.1}
+.stat span{color:var(--muted);font-size:13px}
+.list{border:1px solid var(--line);border-radius:8px;background:var(--surface);overflow:hidden}
+.row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-top:1px solid var(--line);flex-wrap:wrap}
+.row:first-child{border-top:0}
+.row.click{cursor:pointer}.row.click:hover{background:var(--surface-2)}
+.row .grow{flex:1;min-width:180px}
+.row .name{font-weight:600}
+.row .muted,.muted{color:var(--muted);font-size:13px}
+.grid{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}
+.grid i{width:12px;height:12px;border-radius:2px;background:var(--surface-2);border:1px solid var(--line)}
+.grid i.done{background:var(--ok);border-color:var(--ok)}
+.grid i.cur{background:var(--accent-soft);border-color:var(--accent)}
+.bar{height:4px;background:var(--surface-2);border-radius:2px;overflow:hidden;width:120px}
+.bar span{display:block;height:100%;background:var(--ok)}
+.empty{padding:18px 16px;color:var(--muted)}
+.chain{list-style:none;padding:0;margin:14px 0 26px;display:flex;flex-wrap:wrap;gap:8px 0;align-items:center}
+.chain li{display:flex;align-items:center;font-size:12.5px}
+.chain li+li::before{content:"";width:14px;height:1px;background:var(--line);display:block}
+.chain span{border:1px solid var(--line);border-radius:4px;padding:2px 8px;color:var(--muted);background:var(--surface)}
+.chain .done span{border-color:var(--ok);color:var(--ok)}
+.chain .cur span{border-color:var(--accent);background:var(--accent);color:var(--surface);font-weight:600}
+.panel{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:20px 22px;margin-bottom:18px}
+.brief{border-left:3px solid var(--accent)}
+.brief>h3{margin:0 0 8px;font-size:15px;color:var(--accent)}
+.card{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:18px 22px;margin-bottom:14px}
+.card header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}
+.tag{font-size:12px;border-radius:4px;padding:1px 8px;border:1px solid var(--line);color:var(--muted)}
+.tag.rev{border-color:var(--warn);color:var(--warn)}
+.tag.new{border-color:var(--accent);color:var(--accent)}
+.tag.weak{border-color:var(--bad);color:var(--bad)}
+.tag.Easy{color:var(--ok)}.tag.Medium{color:var(--warn)}.tag.Hard{color:var(--bad)}
+.card h3{font-size:17px;margin:4px 0 2px;line-height:1.35}
+.why{color:var(--muted);font-size:13.5px;margin:0 0 12px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
+.marks{display:flex;gap:0;margin-left:auto;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.marks button{border:0;background:var(--surface);padding:5px 11px;font-size:13px;border-left:1px solid var(--line)}
+.marks button:first-child{border-left:0}
+.marks button[aria-pressed="true"][data-m="solved"]{background:var(--ok);color:var(--surface)}
+.marks button[aria-pressed="true"][data-m="review"]{background:var(--warn);color:var(--surface)}
+.marks button[aria-pressed="true"][data-m="failed"]{background:var(--bad);color:var(--surface)}
+.answer{margin-top:14px;border-top:1px dashed var(--line);padding-top:6px}
+.answer h4{margin:14px 0 4px;font-size:14px}
+.md{overflow-wrap:anywhere}
+.md p{margin:.5em 0}.md ul,.md ol{padding-left:1.3em;margin:.4em 0}
+.md h1,.md h2,.md h3,.md h4{font-size:15px;margin:14px 0 4px}
+.md table{border-collapse:collapse;font-size:13.5px;display:block;overflow-x:auto;max-width:100%;margin:8px 0}
+.md th,.md td{border:1px solid var(--line);padding:4px 10px;text-align:left;white-space:nowrap}
+.md th{background:var(--surface-2)}
+.md code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);padding:1px 5px;border-radius:3px}
+.md pre{background:var(--code-bg);border:1px solid var(--line);border-radius:6px;padding:12px 14px;overflow-x:auto;margin:10px 0}
+.md pre code{background:none;padding:0;font-size:13px;line-height:1.55}
+.hljs-keyword,.hljs-built_in,.hljs-selector-tag{color:var(--kw)}
+.hljs-string,.hljs-attr{color:var(--str)}
+.hljs-number,.hljs-literal{color:var(--num)}
+.hljs-comment{color:var(--cm);font-style:italic}
+.hljs-title,.hljs-function .hljs-title{color:var(--fn)}
+.status{list-style:none;padding:0;margin:12px 0 0;font-size:14px}
+.status li{padding:3px 0;color:var(--muted)}
+.status li.ok{color:var(--ok)}.status li.err{color:var(--bad)}
+.banner{padding:12px 16px;border-radius:8px;margin-bottom:18px;background:var(--accent-soft);color:var(--text)}
+.banner.ok{background:transparent;border:1px solid var(--ok)}
+.chip{font-size:12px;border-radius:4px;padding:1px 7px;border:1px solid}
+.chip.review{color:var(--warn)}.chip.failed{color:var(--bad)}
+.edit .panel{padding:16px 18px}
+.edit label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+.edit input[type=text],.edit select,.edit textarea{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:7px 10px}
+.edit textarea{min-height:130px;font-family:var(--mono);font-size:13px}
+.edit .top{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.edit .top input{flex:1;min-width:160px;font-weight:600}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--text);color:var(--bg);padding:8px 16px;border-radius:6px;font-size:14px;z-index:20;max-width:90vw}
+.loading{padding:60px 40px;color:var(--muted)}
+@media (max-width:820px){
+  .app{grid-template-columns:1fr}
+  aside{position:fixed;inset:0 auto 0 0;width:280px;z-index:10;transform:translateX(-100%);transition:transform .2s;padding-top:calc(20px + env(safe-area-inset-top,0px))}
+  aside.open{transform:none;box-shadow:0 0 0 100vmax rgba(0,0,0,.35)}
+  .topbar{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--surface);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+  main{padding:22px 16px 60px}
+  h1{font-size:24px}
+  .marks{margin-left:0}
+  .two{grid-template-columns:1fr}
+  .card,.panel{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){aside{transition:none}}
+</style>
+</head>
+<body>
+<div class="topbar"><button class="btn small" id="menuBtn" aria-label="Open sections">Menu</button><b>DE Interview Prep</b></div>
+<div class="app">
+  <aside id="sidebar"></aside>
+  <main id="main"><div class="loading">Loading your progress…</div></main>
+</div>
+<script>
+(function(){
+"use strict";
+/* ---------- defaults ---------- */
+const DEFAULTS=[
+["DSA (Python)","dsa",false,["Arrays","Strings","Hashing","Two Pointers","Sliding Window","Stacks & Queues","Linked Lists","Binary Search","Sorting","Heaps","Trees","Graphs (BFS/DFS)","Intervals","Greedy","Dynamic Programming","SQL-style problems in Python (group-by, dedup, joins with dicts)"]],
+["SQL","sql",false,["Joins","Aggregations","Window Functions","CTEs & Recursive CTEs","Subqueries","Query Optimization","Indexing","Gaps & Islands","SCD handling in SQL"]],
+["Data Modeling","theory",true,["OLTP vs OLAP","Normalization","Star & Snowflake Schema","Fact & Dimension design","SCD Types","Data Vault","Grain definition","Modeling for event/clickstream data","Lakehouse modeling (Bronze/Silver/Gold)"]],
+["System Design for Data Engineering","theory",true,["Batch vs Streaming pipelines","Lambda/Kappa","CDC","Idempotency & Exactly-once","Backfills","Late-arriving data","Data Quality frameworks","Orchestration","Designing a data platform end-to-end (ride-hailing analytics, payments reconciliation, ad-click pipeline)"]],
+["Apache Spark","theory",true,["Architecture (Driver/Executor/DAG)","Transformations vs Actions","Lazy evaluation","Partitioning","Shuffles","Joins (broadcast, sort-merge)","Skew handling","Caching","Catalyst & AQE","Memory tuning","Structured Streaming"]],
+["PySpark","pyspark",false,["DataFrame API","UDFs vs built-ins","Window functions","Handling nulls/schemas","Reading/writing formats (Parquet, Delta, JSON)","Performance debugging","Common coding round problems"]],
+["Kafka & Streaming","theory",true,["Topics/Partitions","Consumer groups","Offsets","Delivery semantics","Watermarking","Stateful processing","Schema Registry"]],
+["AWS for Data Engineering","theory",true,["S3","Glue","EMR","Athena","Redshift","Kinesis","Lambda","Step Functions","IAM for data","Lake Formation","Cost optimization"]],
+["Azure for Data Engineering","theory",true,["ADLS Gen2","Data Factory","Synapse","Event Hubs","Azure Databricks integration","Security & networking"]],
+["Databricks","theory",true,["Delta Lake (ACID, time travel, OPTIMIZE, Z-ORDER, VACUUM)","Unity Catalog","Workflows","Delta Live Tables","Autoloader","Photon","Cluster sizing","Liquid clustering"]],
+["Airflow / Orchestration","theory",true,["DAG design","Idempotent tasks","Sensors","Retries & SLAs","Backfills","Dynamic DAGs"]],
+["Data Quality & Governance","theory",true,["Validation","Data contracts","Lineage","Observability","PII handling"]],
+["AI for Data Engineers","theory",true,["Data pipelines for ML/LLMs","Feature stores","Vector databases","Embedding pipelines","RAG data ingestion","Chunking strategies","LLMOps data concerns"]],
+["Behavioral / Leadership","behavioral",true,["Ownership","Conflict","Incident handling","Mentoring","Tradeoff decisions"]]
+];
+const DSA_DAYS={"Arrays":5,"Strings":5,"Hashing":5,"Two Pointers":5,"Sliding Window":5,"Stacks & Queues":5,"Linked Lists":4,"Binary Search":5,"Sorting":4,"Heaps":5,"Trees":6,"Graphs (BFS/DFS)":6,"Intervals":4,"Greedy":4,"Dynamic Programming":7,"SQL-style problems in Python (group-by, dedup, joins with dicts)":5};
+const OTHER_DAYS=3;
+const KINDS={dsa:"DSA coding (Python)",sql:"SQL coding",pyspark:"PySpark coding",theory:"Scenario / theory",behavioral:"Behavioral (STAR)"};
+
+/* ---------- utils ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad=n=>String(n).padStart(2,"0");
+const fmt=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const today=()=>fmt(new Date());
+function addDays(ds,n){const[y,m,d]=ds.split("-").map(Number);return fmt(new Date(y,m-1,d+n));}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const uid=()=>Math.random().toString(36).slice(2,8);
+const slug=s=>(s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,24)||"sec")+"-"+uid();
+const clone=o=>JSON.parse(JSON.stringify(o));
+function toast(msg){const t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3200);}
+function md(s){
+  if(Array.isArray(s)) s=s.map(x=>"- "+x).join("\n");
+  s=String(s==null?"":s);
+  try{ if(window.marked&&window.DOMPurify) return '<div class="md">'+DOMPurify.sanitize(marked.parse(s))+"</div>"; }catch(e){}
+  return '<div class="md"><pre>'+esc(s)+"</pre></div>";
+}
+function highlight(root){ if(!window.hljs) return; root.querySelectorAll("pre code").forEach(el=>{ if(!el.dataset.hl){ try{hljs.highlightElement(el);}catch(e){} el.dataset.hl="1"; } }); }
+
+/* ---------- storage ---------- */
+const Store={idb:null,
+  async init(){
+    try{ this.idb=await new Promise((res,rej)=>{const r=indexedDB.open("de-interview-prep",1);r.onupgradeneeded=()=>r.result.createObjectStore("kv");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}); }catch(e){ this.idb=null; }
+  },
+  tx(mode,fn){return new Promise((res,rej)=>{const t=this.idb.transaction("kv",mode);const st=t.objectStore("kv");const r=fn(st);t.oncomplete=()=>res(r&&r.result);t.onerror=()=>rej(t.error);});},
+  lget(n){try{const v=localStorage.getItem("deprep:"+n);return v?JSON.parse(v):null;}catch(e){return null;}},
+  lset(n,v){try{localStorage.setItem("deprep:"+n,JSON.stringify(v));}catch(e){throw new Error("Browser storage is full");}},
+  async get(n){ if(this.idb){const v=await this.tx("readonly",s=>s.get(n));return v===undefined?null:v;} return this.lget(n); },
+  async set(n,v){ if(this.idb) return this.tx("readwrite",s=>s.put(v,n)); this.lset(n,v); },
+  async all(){ if(this.idb){ const keys=await this.tx("readonly",s=>s.getAllKeys()); const out={}; for(const k of keys) out[k]=await this.get(k); return out; }
+    const out={}; for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i); if(k.startsWith("deprep:")&&k!=="deprep:view") out[k.slice(7)]=this.lget(k.slice(7));} return out; },
+  async clear(){ if(this.idb) return this.tx("readwrite",s=>s.clear()); Object.keys(localStorage).filter(k=>k.startsWith("deprep:")).forEach(k=>localStorage.removeItem(k)); }
+};
+const MODELS=[["claude-sonnet-5","Claude Sonnet 5 (recommended)"],["claude-opus-5-5","Claude Opus 5.5 (best quality, pricier)"],["claude-haiku-4-5-20251001","Claude Haiku 4.5 (fastest, cheapest)"]];
+const cfg={get key(){try{return localStorage.getItem("deprep:apikey")||"";}catch(e){return "";}},get model(){try{return localStorage.getItem("deprep:model")||MODELS[0][0];}catch(e){return MODELS[0][0];}}};
+const chains={};
+function save(name,val){
+  const snap=clone(val);
+  chains[name]=(chains[name]||Promise.resolve()).then(()=>Store.set(name,snap)).catch(e=>toast("Couldn't save: "+((e&&(e.message||e.code))||"unknown error")));
+  return chains[name];
+}
+
+/* ---------- state ---------- */
+let state=null; const sets={}; let view={name:"dash"}; const generating={}; const armed={};
+function defaultState(){
+  return {version:1,bump2:true,created:today(),activity:[],weak:[],sections:DEFAULTS.map(([name,kind,brief,topics])=>newSection(name,kind,brief,topics,kind==="dsa"?DSA_DAYS:Object.fromEntries(topics.map(t=>[t,OTHER_DAYS]))))};
+}
+function newSection(name,kind,brief,topics,days){return {id:slug(name),name,kind,brief,topics:topics.slice(),topicDays:Object.assign({},days||{}),topicDay:1,idx:0,completed:[],dayCount:0,lastDone:null,prevTopic:null,round:1};}
+const daysFor=(s,t)=>Math.max(1,Math.min(30,((s.topicDays||{})[t])|0||1));
+const saveState=()=>save("state",state);
+const secById=id=>state.sections.find(s=>s.id===id);
+const isDoneToday=s=>s.lastDone===today();
+const isFinished=s=>s.idx>=s.topics.length;
+const setKey=s=>"set_"+s.id+"_"+(isDoneToday(s)?s.dayCount-1:s.dayCount);
+async function loadSet(key){ if(!(key in sets)) sets[key]=await Store.get(key); return sets[key]; }
+function streak(){const a=new Set(state.activity);let d=today();if(!a.has(d))d=addDays(d,-1);let n=0;while(a.has(d)){n++;d=addDays(d,-1);}return n;}
+const dueWeak=secId=>state.weak.filter(w=>(!secId||w.secId===secId)&&w.nextDue<=today()).sort((a,b)=>a.nextDue<b.nextDue?-1:1);
+
+/* ---------- LLM ---------- */
+const STYLE={
+dsa:'LeetCode-style coding problem as asked in product-company / big-tech Senior Data Engineer DSA rounds. The "prompt" must contain: problem statement, constraints, at least two examples with input and output, and the expected optimal time/space complexity. The answer "solution" is Python 3 in a ```python fenced block. "type" is "coding".',
+sql:'Hands-on SQL coding problem. The "prompt" must include the schema and sample input tables as markdown tables (4-8 rows each) and the expected output as a markdown table. "solution" is standard SQL in a ```sql fenced block (mention Postgres vs Spark SQL differences only if they matter). "complexity" covers performance/indexing considerations. "type" is "coding".',
+pyspark:'Hands-on PySpark coding problem as asked in data engineering coding rounds. The "prompt" must include sample input DataFrames (schema + rows as markdown tables) and the expected output. "solution" uses the PySpark DataFrame API in a ```python fenced block, preferring built-in functions over UDFs. "complexity" covers shuffle/partitioning cost. "type" is "coding".',
+theory:'SCENARIO-BASED question grounded in a realistic production situation with concrete numbers (data volumes, SLAs, cluster sizes, latencies, costs). Never a plain definition question like "What is X?". Example of the expected style: "Your Spark job processing 2 TB of daily transactions suddenly takes 3x longer and one task runs for 40 minutes while others finish in 2. Diagnose the issue and explain how you\'d fix it." The answer must fill "clarifying" (questions to ask the interviewer), "diagnosis", "solution" (include config, code, SQL or text diagrams in fenced blocks where useful) and "tradeoffs". "type" is "scenario".',
+behavioral:'Senior-level behavioral / leadership question as asked at big tech, framed for a data engineer. "approach" explains what the interviewer is evaluating; "solution" is a model answer in STAR format (Situation, Task, Action, Result) with a concrete data-engineering example and measurable results; "tradeoffs" lists pitfalls to avoid. "type" is "behavioral".'
+};
+function questionPrompt(sec,slots,avoid){
+  const lines=slots.map((s,i)=>{
+    let p=(i+1)+'. Sub-topic: "'+s.topic+'". Difficulty: '+s.difficulty+'. ';
+    if(s.slot==="revision") p+="Purpose: revision of yesterday's sub-topic. Test a different angle than the earlier questions listed below.";
+    else if(s.slot==="weak") p+='Purpose: the candidate struggled with an earlier question titled "'+s.weakTitle+'". Ask a NEW question on the same underlying concept from a different angle; do not repeat it.';
+    else p+="Purpose: new learning for today's sub-topic."+(s.stage?" "+s.stage:"");
+    return p;
+  }).join("\n");
+  return "You are an experienced interviewer at a top product company writing practice questions for a candidate preparing for Senior Data Engineer interviews. Questions must reflect what is actually asked in these interviews.\n\n"+
+  "Section: "+sec.name+"\nQuestion style: "+(STYLE[sec.kind]||STYLE.theory)+"\n\n"+
+  "Write exactly "+slots.length+" questions, one per slot, in this order:\n"+lines+"\n\n"+
+  (avoid.length?"Never repeat or trivially rephrase any of these previously asked questions:\n"+avoid.map(t=>"- "+t).join("\n")+"\n\n":"")+
+  'Each question needs a one-line "why" explaining why interviewers ask it, and 2-4 "followups" an interviewer might ask next.\n\n'+
+  'Return ONLY a JSON object, with no prose and no code fences around it, of exactly this shape:\n'+
+  '{"questions":[{"title":"short unique title, max 80 chars","type":"coding|scenario|behavioral","difficulty":"Easy|Medium|Hard","why":"one line","prompt":"markdown","answer":{"approach":"markdown","clarifying":"markdown","diagnosis":"markdown","solution":"markdown","complexity":"markdown","tradeoffs":"markdown","followups":["..."]}}]}\n'+
+  "Omit answer fields that do not apply. Escape newlines inside JSON strings as \\n and escape double quotes.";
+}
+function briefPrompt(sec,topic){
+  return 'Write a Concept Brief on "'+topic+'" (section: '+sec.name+") for a candidate preparing for Senior Data Engineer interviews. It must be scannable in 5-10 minutes, max ~450 words, in markdown with these parts: Key ideas (bullets), a text diagram in a fenced code block where it genuinely helps, Common pitfalls, Interview tips. Be concrete and senior-level. Return only the markdown, no preamble.";
+}
+async function ask(prompt){
+  if(!cfg.key) throw new Error("Add your Anthropic API key in Settings first.");
+  for(let t=0;;t++){
+    const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":cfg.key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+      body:JSON.stringify({model:cfg.model,max_tokens:8000,messages:[{role:"user",content:prompt}]})});
+    if((r.status===429||r.status===529||r.status>=500)&&t<2){await sleep(4000*(t+1));continue;}
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error((data.error&&data.error.message)||("API error "+r.status));
+    return (data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("");
+  }
+}
+function parseJSON(t){
+  t=String(t).trim().replace(/^```(?:json)?\s*/i,"").replace(/```\s*$/,"");
+  const a=t.indexOf("{"),b=t.lastIndexOf("}");
+  if(a<0||b<a) throw new Error("The response had no JSON.");
+  return JSON.parse(t.slice(a,b+1));
+}
+async function genGroup(sec,slots,avoid){
+  let lastErr;
+  for(let attempt=0;attempt<2;attempt++){
+    try{
+      const obj=parseJSON(await ask(questionPrompt(sec,slots,avoid)));
+      const qs=Array.isArray(obj.questions)?obj.questions:[];
+      if(!qs.length) throw new Error("No questions returned.");
+      return qs.slice(0,slots.length).map((q,i)=>{
+        const s=slots[i]||slots[slots.length-1];
+        const label=s.slot==="revision"?"Revision: "+s.topic:s.slot==="weak"?"Weak area: "+s.topic:"New: "+s.topic;
+        return {slot:s.slot,label,topic:s.topic,weakId:s.weakId||null,title:String(q.title||"Question").slice(0,120),type:q.type||(sec.kind==="theory"?"scenario":sec.kind==="behavioral"?"behavioral":"coding"),difficulty:["Easy","Medium","Hard"].includes(q.difficulty)?q.difficulty:s.difficulty,why:q.why||"",prompt:q.prompt||"",answer:q.answer||{},mark:null,applied:null};
+      });
+    }catch(e){ lastErr=e; if(e&&/api key|authentication|permission|credit/i.test(e.message||"")) break; }
+  }
+  throw lastErr;
+}
+async function generateSet(sec){
+  if(generating[sec.id]) return;
+  const key=setKey(sec), topic=sec.topics[sec.idx], prev=sec.prevTopic;
+  const tot=daysFor(sec,topic), dn=sec.topicDay||1;
+  const stage=tot>1?"This is day "+dn+" of "+tot+" on this sub-topic: "+(dn===1?"start with the core patterns.":dn===tot?"cover the hardest variants and pattern combinations.":"move beyond earlier days to less common patterns and harder variants.")+" Do not reuse problems listed as previously asked.":"";
+  const status={brief:sec.brief?"Writing concept brief…":null,rev:prev?"Writing revision questions…":null,neu:"Writing new questions…"};
+  generating[sec.id]={status}; render();
+  const upd=(k,v)=>{status[k]=v; if(view.name==="sec"&&view.id===sec.id) renderStatus(status);};
+  try{
+    const hist=(await Store.get("hist_"+sec.id))||{titles:[]};
+    const avoid=hist.titles.slice(-40);
+    const odd=sec.dayCount%2===1;
+    const briefP=sec.brief?ask(briefPrompt(sec,topic)).then(t=>{upd("brief","Concept brief ready");return t.trim();}).catch(e=>{upd("brief","Concept brief failed: "+(e.message||e.code));return null;}):Promise.resolve(null);
+    let questions=[], weakUsed=null;
+    if(!prev){
+      const g1=await genGroup(sec,[{slot:"new",topic,stage,difficulty:"Easy"},{slot:"new",topic,stage,difficulty:"Medium"},{slot:"new",topic,stage,difficulty:"Medium"}],avoid);
+      upd("neu","3 of 5 new questions ready…");
+      const g2=await genGroup(sec,[{slot:"new",topic,stage,difficulty:"Medium"},{slot:"new",topic,stage,difficulty:"Hard"}],avoid.concat(g1.map(q=>q.title)));
+      upd("neu","New questions ready"); questions=g1.concat(g2);
+    }else{
+      weakUsed=dueWeak(sec.id)[0]||null;
+      const rev=[{slot:"revision",topic:prev,difficulty:odd?"Easy":"Medium"}];
+      rev.push(weakUsed?{slot:"weak",topic:weakUsed.topic,difficulty:"Medium",weakId:weakUsed.id,weakTitle:weakUsed.title}:{slot:"revision",topic:prev,difficulty:odd?"Medium":"Hard"});
+      const neu=[{slot:"new",topic,stage,difficulty:odd?"Medium":"Easy"},{slot:"new",topic,stage,difficulty:"Medium"},{slot:"new",topic,stage,difficulty:"Hard"}];
+      const [r,n]=await Promise.all([
+        genGroup(sec,rev,avoid).then(x=>{upd("rev","Revision questions ready");return x;}),
+        genGroup(sec,neu,avoid).then(x=>{upd("neu","New questions ready");return x;})
+      ]);
+      questions=r.concat(n);
+    }
+    const brief=await briefP;
+    const set={key,secId:sec.id,day:sec.dayCount+1,created:today(),topic,topicDayLabel:tot>1?"Day "+dn+" of "+tot+" on this sub-topic":"",prevTopic:prev||null,brief,questions,completedOn:null};
+    sets[key]=set; await save(key,set);
+    hist.titles=hist.titles.concat(questions.map(q=>q.title)).slice(-120); save("hist_"+sec.id,hist);
+    if(weakUsed){weakUsed.nextDue=addDays(today(),2); saveState();}
+  }catch(e){
+    toast("Couldn't generate the set: "+((e&&(e.message||e.code))||"unknown error"));
+  }finally{ delete generating[sec.id]; render(); }
+}
+
+/* ---------- actions ---------- */
+function markQ(sec,set,i,m){
+  const q=set.questions[i]; q.mark=q.mark===m?null:m;
+  const wid=set.key+"_"+i, ex=state.weak.find(w=>w.id===wid);
+  if(q.slot==="weak"&&q.weakId&&q.mark&&q.applied!==q.mark){
+    const w=state.weak.find(x=>x.id===q.weakId);
+    if(w){ if(q.mark==="solved"){w.reps=(w.reps||0)+1; if(w.reps>=3) state.weak=state.weak.filter(x=>x!==w); else w.nextDue=addDays(today(),w.reps===1?3:7);}
+      else {w.reps=0;w.status=q.mark;w.nextDue=addDays(today(),1);} }
+    q.applied=q.mark;
+  }else if(q.slot!=="weak"){
+    if(q.mark==="review"||q.mark==="failed"){ if(ex) ex.status=q.mark; else state.weak.push({id:wid,secId:sec.id,topic:q.topic,title:q.title,status:q.mark,added:today(),nextDue:addDays(today(),1),reps:0}); }
+    else if(ex&&!ex.reps) state.weak=state.weak.filter(w=>w!==ex);
+  }
+  state.weak=state.weak.slice(-300);
+  save(set.key,set); saveState(); render();
+}
+function completeSet(sec,set){
+  set.undo={idx:sec.idx,topicDay:sec.topicDay||1,prevTopic:sec.prevTopic,lastDone:sec.lastDone,completed:sec.completed.slice(),hadActivity:state.activity.includes(today())};
+  const topic=sec.topics[sec.idx];
+  if((sec.topicDay||1)<daysFor(sec,topic)){ sec.topicDay=(sec.topicDay||1)+1; }
+  else { if(!sec.completed.includes(topic)) sec.completed.push(topic); sec.idx++; sec.topicDay=1; }
+  sec.prevTopic=topic; sec.dayCount++; sec.lastDone=today();
+  if(!state.activity.includes(today())) state.activity.push(today());
+  state.activity=state.activity.slice(-500);
+  set.completedOn=today();
+  save(set.key,set); saveState(); render();
+}
+function undoComplete(sec,set){
+  const u=set.undo; if(!u) return;
+  sec.idx=u.idx; sec.topicDay=u.topicDay||1; sec.prevTopic=u.prevTopic; sec.lastDone=u.lastDone; sec.completed=u.completed; sec.dayCount--;
+  if(!u.hadActivity&&!state.sections.some(s=>s!==sec&&s.lastDone===today())) state.activity=state.activity.filter(d=>d!==today());
+  set.completedOn=null; delete set.undo;
+  save(set.key,set); saveState(); render();
+}
+function arm(id,fn){ if(armed[id]){delete armed[id];fn();} else {armed[id]=1;render();setTimeout(()=>{if(armed[id]){delete armed[id];render();}},4000);} }
+
+/* ---------- render ---------- */
+function render(){ renderSidebar(); if(view.name==="dash") renderDash(); else if(view.name==="edit") renderEdit(); else if(view.name==="settings") renderSettings(); else renderSection(); }
+function go(v){ view=v; try{localStorage.setItem("deprep:view",JSON.stringify(v));}catch(e){} $("#sidebar").classList.remove("open"); render(); window.scrollTo(0,0); }
+function renderSidebar(){
+  const cur=id=>view.name==="sec"&&view.id===id;
+  $("#sidebar").innerHTML='<div class="brand">DE Interview Prep<small>Senior Data Engineer, one set a day</small></div><ul class="nav">'+
+    '<li><button data-go="dash" aria-current="'+(view.name==="dash")+'">Dashboard<span class="meta">'+streak()+'d streak</span></button></li></ul><div class="navsep"></div><ul class="nav">'+
+    state.sections.map(s=>{const st=isDoneToday(s)?"done":isFinished(s)?"":"pending";
+      return '<li><button data-sec="'+esc(s.id)+'" aria-current="'+cur(s.id)+'"><span class="dot '+st+'"></span>'+esc(s.name)+'<span class="meta">'+s.completed.length+"/"+s.topics.length+"</span></button></li>";}).join("")+
+    '</ul><div class="navsep"></div><ul class="nav"><li><button data-go="edit" aria-current="'+(view.name==="edit")+'">Edit sections</button></li><li><button data-go="settings" aria-current="'+(view.name==="settings")+'">Settings &amp; backup</button></li></ul>';
+}
+function renderDash(){
+  const pend=state.sections.filter(s=>!isDoneToday(s)&&!isFinished(s));
+  const due=dueWeak();
+  const d=new Date();
+  $("#main").innerHTML='<div class="wrap"><h1>Today</h1><p class="sub">'+esc(d.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"}))+"</p>"+
+  '<div class="stats"><div class="stat"><b>'+streak()+'</b><span>day streak</span></div><div class="stat"><b>'+pend.length+'</b><span>sets pending today</span></div><div class="stat"><b>'+state.sections.filter(isDoneToday).length+'</b><span>sets done today</span></div><div class="stat"><b>'+state.weak.length+'</b><span>weak areas ('+due.length+' due)</span></div></div>'+
+  "<h2>Pending today</h2>"+(pend.length?'<div class="list">'+pend.map(s=>'<div class="row click" data-sec="'+esc(s.id)+'"><div class="grow"><div class="name">'+esc(s.name)+'</div><div class="muted">'+(s.prevTopic?"Revise "+esc(s.prevTopic)+", then ":"")+"learn "+esc(s.topics[s.idx])+(daysFor(s,s.topics[s.idx])>1?" (day "+(s.topicDay||1)+" of "+daysFor(s,s.topics[s.idx])+")":"")+'</div></div><span class="muted">Day '+(s.dayCount+1)+"</span></div>").join("")+"</div>":'<div class="list"><div class="empty">Every set is done for today. New sub-topics unlock tomorrow.</div></div>')+
+  "<h2>All sections</h2><div class=\"list\">"+state.sections.map(s=>{const pct=s.topics.length?Math.round(s.completed.filter(t=>s.topics.includes(t)).length/s.topics.length*100):0;
+    return '<div class="row click" data-sec="'+esc(s.id)+'"><div class="grow"><div class="name">'+esc(s.name)+'</div><div class="grid">'+s.topics.map((t,i)=>'<i class="'+(s.completed.includes(t)?"done":i===s.idx&&!isFinished(s)?"cur":"")+'" title="'+esc(t)+'"></i>').join("")+'</div></div><div class="bar" aria-label="'+pct+'% complete"><span style="width:'+pct+'%"></span></div><span class="muted" style="width:44px;text-align:right">'+pct+"%</span></div>";}).join("")+"</div>"+
+  "<h2>Weak areas</h2>"+weakList(state.weak)+"</div>";
+}
+function weakList(list){
+  if(!list.length) return '<div class="list"><div class="empty">Questions you mark “Needs review” or “Couldn\'t solve” show up here and come back in later revision slots.</div></div>';
+  const sorted=list.slice().sort((a,b)=>a.nextDue<b.nextDue?-1:1);
+  return '<div class="list">'+sorted.map(w=>{const s=secById(w.secId);return '<div class="row"><div class="grow"><div class="name">'+esc(w.title)+'</div><div class="muted">'+esc(s?s.name:"Removed section")+", "+esc(w.topic)+(w.nextDue<=today()?", due now":", back on "+esc(w.nextDue))+'</div></div><span class="chip '+esc(w.status)+'">'+(w.status==="failed"?"Couldn't solve":"Needs review")+'</span><button class="btn small" data-rmweak="'+esc(w.id)+'">'+(armed["w"+w.id]?"Click to confirm":"Mark resolved")+"</button></div>";}).join("")+"</div>";
+}
+function chainHTML(s){
+  return '<ol class="chain">'+s.topics.map((t,i)=>{const c=s.completed.includes(t)?"done":(i===s.idx&&!isFinished(s))?"cur":"";const n=daysFor(s,t);return '<li class="'+c+'"><span>'+esc(t)+(n>1?" · "+(c==="cur"?(s.topicDay||1)+"/":"")+n+"d":"")+"</span></li>";}).join("")+"</ol>";
+}
+function renderStatus(st){const el=$("#genstatus"); if(!el) return; el.innerHTML=["brief","rev","neu"].filter(k=>st[k]).map(k=>'<li class="'+(/ready/.test(st[k])?"ok":/failed/.test(st[k])?"err":"")+'">'+esc(st[k])+"</li>").join("");}
+async function renderSection(){
+  const s=secById(view.id); if(!s){go({name:"dash"});return;}
+  const main=$("#main");
+  const head='<div class="wrap"><p class="muted" style="margin:0 0 4px">'+esc(s.name)+", sub-topic "+Math.min(s.idx+(isDoneToday(s)?0:1),s.topics.length)+" of "+s.topics.length+"</p>";
+  if(isFinished(s)&&!isDoneToday(s)){
+    main.innerHTML=head+"<h1>Section complete</h1>"+chainHTML(s)+'<div class="panel"><p style="margin-top:0">You\'ve worked through every sub-topic here. Start another round to cycle through them again with fresh questions.</p><button class="btn primary" data-round>Start round '+(s.round+1)+"</button></div>"+sectionWeak(s)+"</div>";
+    return;
+  }
+  const key=setKey(s);
+  if(!(key in sets)){ main.innerHTML=head+'<div class="loading" style="padding:30px 0">Loading…</div></div>'; await loadSet(key); if(view.name!=="sec"||view.id!==s.id) return; }
+  const set=sets[key];
+  const topic=isDoneToday(s)?(set?set.topic:s.prevTopic):s.topics[s.idx];
+  const setDay=set&&set.topicDayLabel?set.topicDayLabel:(!isDoneToday(s)&&daysFor(s,topic)>1?"Day "+(s.topicDay||1)+" of "+daysFor(s,topic)+" on this sub-topic":"");
+  let body=head+"<h1>"+esc(topic)+"</h1>"+(setDay?'<p class="muted" style="margin:0">'+esc(setDay)+"</p>":"")+chainHTML(s);
+  if(isDoneToday(s)){
+    const nt=s.topics[s.idx]; const next=isFinished(s)?"You've finished every sub-topic; start a new round tomorrow.":nt===topic?"Tomorrow: day "+(s.topicDay||1)+" of "+daysFor(s,nt)+" on "+esc(nt)+".":"Tomorrow: revise "+esc(topic)+" and learn "+esc(nt)+".";
+    body+='<div class="banner ok">Set completed today. '+next+(set&&set.undo?' <button class="btn small" data-undo style="margin-left:8px">Undo</button>':"")+"</div>";
+  }
+  if(!set){
+    const g=generating[s.id];
+    body+='<div class="panel"><p style="margin-top:0">'+(s.prevTopic?"Today's set: 2 revision questions on <b>"+esc(s.prevTopic)+"</b> and 3 new questions on <b>"+esc(topic)+"</b>.":"Day 1: all 5 questions are on <b>"+esc(topic)+"</b>.")+(dueWeak(s.id).length&&s.prevTopic?" One revision slot will revisit a weak area.":"")+"</p>"+
+      (cfg.key?'<button class="btn primary" data-gen '+(g?"disabled":"")+">"+(g?"Generating…":"Generate today's set")+"</button><ul class=\"status\" id=\"genstatus\"></ul>"+(g?'<p class="muted">This usually takes under a minute.</p>':"")
+      :'<p class="muted">Add your Anthropic API key to generate questions.</p><button class="btn primary" data-go="settings">Open settings</button>')+"</div>";
+    main.innerHTML=body+sectionWeak(s)+"</div>";
+    if(g) renderStatus(g.status);
+    return;
+  }
+  if(set.brief) body+='<div class="panel brief"><h3>Concept brief</h3>'+md(set.brief)+"</div>";
+  body+=set.questions.map((q,i)=>{
+    const open=q._open;
+    return '<article class="card" data-q="'+i+'"><header><span class="tag '+(q.slot==="revision"?"rev":q.slot==="weak"?"weak":"new")+'">'+esc(q.label)+'</span><span class="tag '+esc(q.difficulty)+'">'+esc(q.difficulty)+"</span></header><h3>"+esc(q.title)+"</h3>"+(q.why?'<p class="why">Why interviewers ask this: '+esc(q.why)+"</p>":"")+md(q.prompt)+
+    '<div class="actions"><button class="btn small" data-ans="'+i+'" aria-expanded="'+!!open+'">'+(open?"Hide answer":"Show answer")+'</button><div class="marks" role="group" aria-label="How did it go">'+
+    [["solved","Solved"],["review","Needs review"],["failed","Couldn't solve"]].map(([m,l])=>'<button data-m="'+m+'" data-mi="'+i+'" aria-pressed="'+(q.mark===m)+'">'+l+"</button>").join("")+"</div></div>"+
+    (open?'<div class="answer">'+answerHTML(q)+"</div>":"")+"</article>";
+  }).join("");
+  if(!set.completedOn){
+    const unmarked=set.questions.filter(q=>!q.mark).length;
+    body+='<div class="panel" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center"><button class="btn primary" data-complete>Mark set completed</button><span class="muted">'+(unmarked?unmarked+" question"+(unmarked>1?"s":"")+" not marked yet. ":"")+((s.topicDay||1)<daysFor(s,s.topics[s.idx])?"Tomorrow continues "+esc(s.topics[s.idx])+" (day "+((s.topicDay||1)+1)+" of "+daysFor(s,s.topics[s.idx])+")":"Tomorrow moves on to "+esc(s.topics[s.idx+1]||"a new round"))+'.</span><button class="btn small" data-regen style="margin-left:auto">'+(armed["regen"+s.id]?"Click again to replace":"Regenerate set")+"</button></div>";
+  }
+  main.innerHTML=body+sectionWeak(s)+"</div>";
+  highlight(main);
+}
+function sectionWeak(s){const l=state.weak.filter(w=>w.secId===s.id); return l.length?"<h2>Weak areas in this section</h2>"+weakList(l):"";}
+function answerHTML(q){
+  const a=q.answer||{}; const H=(t,v)=>v&&(!Array.isArray(v)||v.length)?'<section><h4>'+t+"</h4>"+md(v)+"</section>":"";
+  let h="";
+  if(q.type==="scenario") h=H("Clarifying questions",a.clarifying)+H("Diagnosis",a.diagnosis||a.approach)+H("Solution",a.solution)+H("Tradeoffs",a.tradeoffs)+H("Complexity",a.complexity);
+  else if(q.type==="behavioral") h=H("What the interviewer is evaluating",a.approach)+H("Model answer (STAR)",a.solution)+H("Pitfalls",a.tradeoffs);
+  else h=H("Approach",a.approach)+H("Solution",a.solution)+H("Complexity",a.complexity)+H("Tradeoffs",a.tradeoffs);
+  if(Array.isArray(a.followups)&&a.followups.length) h+=H("Follow-up questions",a.followups);
+  return h||md("_No answer was returned for this question._");
+}
+
+/* ---------- editor ---------- */
+let draft=null;
+function renderEdit(){
+  if(!draft) draft=state.sections.map(s=>({id:s.id,name:s.name,kind:s.kind,brief:s.brief,topics:s.topics.map(t=>daysFor(s,t)>1?t+" | "+daysFor(s,t):t).join("\n")}));
+  $("#main").innerHTML='<div class="wrap edit"><h1>Edit sections</h1><p class="sub">One sub-topic per line. Add “| 3” after a sub-topic to spend 3 days on it. Progress is kept for sub-topics you keep.</p>'+
+  draft.map((d,i)=>'<div class="panel" data-di="'+i+'"><div class="top"><input type="text" data-f="name" value="'+esc(d.name)+'" aria-label="Section name"><button class="btn small" data-up="'+i+'" '+(i?"":"disabled")+' aria-label="Move up">Up</button><button class="btn small" data-down="'+i+'" '+(i<draft.length-1?"":"disabled")+' aria-label="Move down">Down</button><button class="btn small danger" data-del="'+i+'">'+(armed["del"+d.id]?"Click to remove":"Remove")+"</button></div>"+
+    '<div class="two"><div><label>Question style</label><select data-f="kind">'+Object.entries(KINDS).map(([k,l])=>'<option value="'+k+'"'+(d.kind===k?" selected":"")+">"+l+"</option>").join("")+'</select></div><div><label>Concept brief</label><select data-f="brief"><option value="1"'+(d.brief?" selected":"")+'>Show before questions</option><option value="0"'+(d.brief?"":" selected")+">Don't show</option></select></div></div>"+
+    "<label>Sub-topics</label><textarea data-f=\"topics\">"+esc(d.topics)+"</textarea>"+
+    (secById(d.id)?'<div style="margin-top:10px"><button class="btn small" data-reset="'+esc(d.id)+'">'+(armed["reset"+d.id]?"Click to reset progress":"Reset progress")+"</button></div>":"")+"</div>").join("")+
+  '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" data-add>Add section</button><button class="btn primary" data-savedit>Save changes</button><button class="btn" data-canceledit>Discard</button></div></div>';
+}
+function readDraft(){ document.querySelectorAll("[data-di]").forEach(p=>{const d=draft[+p.dataset.di]; p.querySelectorAll("[data-f]").forEach(el=>{const f=el.dataset.f; d[f]=f==="brief"?el.value==="1":el.value;});}); }
+function applyDraft(){
+  readDraft();
+  const out=[];
+  for(const d of draft){
+    const topicDays={};
+    const topics=d.topics.split("\n").map(l=>{const m=l.match(/^(.*?)\s*\|\s*(\d+)\s*$/);const t=(m?m[1]:l).trim();if(t&&m&&+m[2]>1)topicDays[t]=Math.min(30,+m[2]);return t;}).filter(Boolean);
+    const name=d.name.trim()||"Untitled section";
+    if(!topics.length){toast('"'+name+'" needs at least one sub-topic.');return;}
+    const old=secById(d.id);
+    if(!old){out.push(newSection(name,d.kind,d.brief,topics,topicDays));continue;}
+    const cur=old.topics[old.idx]; let idx=cur!=null?topics.indexOf(cur):-1;
+    if(idx<0) idx=Math.min(old.idx,topics.length);
+    if(topics[idx]!==cur) old.topicDay=1;
+    Object.assign(old,{name,kind:d.kind,brief:d.brief,topics,topicDays,idx,completed:old.completed.filter(t=>topics.includes(t))});
+    if((old.topicDay||1)>daysFor(old,topics[idx])) old.topicDay=daysFor(old,topics[idx]);
+    out.push(old);
+  }
+  state.sections=out; draft=null; saveState(); toast("Sections saved"); go({name:"dash"});
+}
+
+/* ---------- settings ---------- */
+function renderSettings(){
+  const k=cfg.key;
+  $("#main").innerHTML='<div class="wrap edit"><h1>Settings</h1><p class="sub">Everything is stored only in this browser.</p>'+
+  '<div class="panel"><label for="k">Anthropic API key</label><input type="text" id="k" autocomplete="off" spellcheck="false" placeholder="sk-ant-..." value="'+esc(k?k.slice(0,10)+"…"+k.slice(-4):"")+'">'+
+  '<label for="mdl">Model</label><select id="mdl">'+MODELS.map(([v,l])=>'<option value="'+v+'"'+(cfg.model===v?" selected":"")+">"+l+"</option>").join("")+'</select>'+
+  '<p class="muted">Get a key at console.anthropic.com. Your key stays in this browser and is sent only to api.anthropic.com.</p>'+
+  '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" data-savekey>Save</button><button class="btn" data-testkey>Test key</button>'+(k?'<button class="btn danger" data-clearkey>Remove key</button>':"")+"</div></div>"+
+  '<h2>Backup</h2><div class="panel"><p style="margin-top:0">Progress lives in this browser only. Export a backup regularly, and import it to move to another device or browser.</p>'+
+  '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" data-export>Export backup</button><label class="btn" style="margin:0;color:var(--text)">Import backup<input type="file" id="imp" accept="application/json" hidden></label><button class="btn danger" data-wipe>'+(armed.wipe?"Click again to erase everything":"Erase all progress")+"</button></div></div></div>";
+  $("#imp").addEventListener("change",async ev=>{const f=ev.target.files[0];if(!f)return;try{const data=JSON.parse(await f.text());if(!data||!data.state)throw new Error("Not a backup file");await Store.clear();for(const [n,v] of Object.entries(data.items||{}))await Store.set(n,v);await Store.set("state",data.state);location.reload();}catch(e){toast("Import failed: "+e.message);}});
+}
+async function exportBackup(){
+  const items=await Store.all(); const st=items.state; delete items.state;
+  const blob=new Blob([JSON.stringify({app:"de-interview-prep",exported:new Date().toISOString(),state:st,items})],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="de-interview-prep-backup-"+today()+".json"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button,[data-sec]"); if(!t) return;
+  const ds=t.dataset;
+  if(t.id==="menuBtn"){$("#sidebar").classList.toggle("open");return;}
+  if(ds.go){ if(ds.go==="edit") draft=null; go({name:ds.go}); return; }
+  if(ds.sec&&!ds.m){ go({name:"sec",id:ds.sec}); return; }
+  if("savekey" in ds){const v=$("#k").value.trim();try{if(v&&!v.includes("…"))localStorage.setItem("deprep:apikey",v);localStorage.setItem("deprep:model",$("#mdl").value);toast("Settings saved");}catch(e){toast("Couldn't save settings");}renderSettings();return;}
+  if("clearkey" in ds){try{localStorage.removeItem("deprep:apikey");}catch(e){}renderSettings();return;}
+  if("testkey" in ds){const v=$("#k").value.trim();if(v&&!v.includes("…")){try{localStorage.setItem("deprep:apikey",v);}catch(e){}}t.disabled=true;t.textContent="Testing…";ask("Reply with the word OK.").then(()=>toast("Key works")).catch(e=>toast("Key test failed: "+e.message)).finally(()=>renderSettings());return;}
+  if("export" in ds){exportBackup();return;}
+  if("wipe" in ds){arm("wipe",async()=>{await Store.clear();location.reload();});return;}
+  if("rmweak" in ds){ arm("w"+ds.rmweak,()=>{state.weak=state.weak.filter(w=>w.id!==ds.rmweak);saveState();render();}); return; }
+  const s=view.name==="sec"?secById(view.id):null; const set=s?sets[setKey(s)]:null;
+  if("gen" in ds&&s){ generateSet(s); return; }
+  if("regen" in ds&&s&&set){ arm("regen"+s.id,()=>{sets[setKey(s)]=null; generateSet(s);}); return; }
+  if("round" in ds&&s){ s.idx=0; s.topicDay=1; s.round++; s.completed=[]; saveState(); render(); return; }
+  if(ds.ans&&set){ const q=set.questions[+ds.ans]; q._open=!q._open; renderSection(); return; }
+  if(ds.m&&set){ markQ(s,set,+ds.mi,ds.m); return; }
+  if("complete" in ds&&s&&set){ completeSet(s,set); toast("Set completed"); return; }
+  if("undo" in ds&&s&&set){ undoComplete(s,set); return; }
+  if(view.name==="edit"){
+    if(ds.up){readDraft();const i=+ds.up;[draft[i-1],draft[i]]=[draft[i],draft[i-1]];renderEdit();return;}
+    if(ds.down){readDraft();const i=+ds.down;[draft[i+1],draft[i]]=[draft[i],draft[i+1]];renderEdit();return;}
+    if(ds.del){readDraft();const i=+ds.del,d=draft[i];arm("del"+d.id,()=>{draft.splice(i,1);renderEdit();});if(armed["del"+d.id])renderEdit();return;}
+    if(ds.reset){readDraft();const id=ds.reset;arm("reset"+id,()=>{const o=secById(id);if(o){Object.assign(o,{idx:0,topicDay:1,completed:[],dayCount:0,lastDone:null,prevTopic:null,round:1});saveState();toast("Progress reset");}renderEdit();});if(armed["reset"+id])renderEdit();return;}
+    if("add" in ds){readDraft();draft.push({id:"new-"+uid(),name:"New section",kind:"theory",brief:true,topics:""});renderEdit();window.scrollTo(0,document.body.scrollHeight);return;}
+    if("savedit" in ds){applyDraft();return;}
+    if("canceledit" in ds){draft=null;go({name:"dash"});return;}
+  }
+});
+
+/* ---------- boot ---------- */
+(async function boot(){
+  await Store.init();
+  state=await Store.get("state");
+  if(!state||!Array.isArray(state.sections)){ state=defaultState(); saveState(); }
+  state.weak=state.weak||[]; state.activity=state.activity||[];
+  let mig=false; state.sections.forEach(s=>{ if(!s.topicDays){ s.topicDays={}; if(s.kind==="dsa") s.topics.forEach(t=>{ if(DSA_DAYS[t]) s.topicDays[t]=DSA_DAYS[t]; }); s.topicDay=s.topicDay||1; mig=true; } });
+  if(!state.bump2){ state.sections.forEach(s=>{ s.topicDays=s.topicDays||{}; s.topics.forEach(t=>{ s.topicDays[t]=Math.min(30,daysFor(s,t)+2); }); }); state.bump2=true; mig=true; }
+  if(mig) saveState();
+  try{const v=JSON.parse(localStorage.getItem("deprep:view")||"null"); if(v&&(v.name!=="sec"||secById(v.id))) view=v;}catch(e){}
+  if(view.name==="edit") view={name:"dash"};
+  if(!cfg.key&&!(await Store.get("seenSettings"))){ view={name:"settings"}; Store.set("seenSettings",true); }
+  render();
+})();
+})();
+</script>
+</body>
+</html>
